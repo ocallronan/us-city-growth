@@ -1,0 +1,69 @@
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/topojson-client@3"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v3.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v4.min.js"></script> 
+</head>
+
+<body>
+
+    <label for="yearSlider">Year: <span id="yearDisplay">1790</span></label><br>
+    <input type="range" id="yearSlider" min="1790" max="2020" step="10" value="1790">
+
+    <h1>Move the slider and see the top 20 cities change</h1>
+    <h2>Top 20 Metro Share: <span id="metroShareValue">Loading...</span> </h2>
+    <h2>Urban Population: <span id="urbanPercentValue">Loading...</span></h2>
+
+     <button id="resetZoom">Reset Zoom</button>
+
+
+  
+     <div id="popup" style="position: absolute; display: none; background: white; border: 1px solid #ccc; padding: 8px; pointer-events: none;"></div>
+
+     <div id="popup" style="
+        position: absolute;
+        display: none;
+        background: white;
+        border: 1px solid #ccc;
+        padding: 8px;
+        pointer-events: none;
+        font-family: sans-serif;
+        font-size: 14px;
+        border-radius: 4px;
+        box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+        
+    ">
+           
+</div>
+
+        <svg
+    
+        xmlns:svg="http://www.w3.org/2000/svg"
+        xmlns="http://www.w3.org/2000/svg"
+        version="1.0"
+        width="959"
+        height="593"
+        id="svg2">
+
+        <g id="mapGroup">
+            <!-- Base map layer (for drawing states, land, etc.) -->
+            <g id="baseMapLayer"></g>
+        
+            <!-- City dot layer (for your interactive circles) -->
+            <g id="cityLayer"></g>
+          </g>
+        </svg>
+
+
+
+
+        <script src="map.js"></script>
+
+
+
+
+    <script src="CityList.js"></script>
+    <script src="Cities.js"></script>
+
+
+</body>
