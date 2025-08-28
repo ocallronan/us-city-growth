@@ -3,6 +3,19 @@ const mapGroup = d3.select("#mapGroup");
 const baseMapLayer = d3.select("#baseMapLayer");
 const cityLayer = d3.select("#cityLayer")
 
+const svg2 = document.getElementById("chart");
+const ns = "http://www.w3.org/2000/svg";
+
+function ordinalSuffix(n) {
+  if (n > 3 && n < 21) return n + "th"; // special case for teens
+  switch (n % 10) {
+    case 1: return n + "st";
+    case 2: return n + "nd";
+    case 3: return n + "rd";
+    default: return n + "th";
+  }
+}
+
 const cities = [nyc, chicago, la, sf, dallas,
   houston,
   philly,
@@ -161,7 +174,28 @@ const urbanPercent = {
   2020: 83,
 }
 
+function wrapTextByChars(text, maxChars = 40) {
+  const words = text.split(" ");
+  let lines = [];
+  let currentLine = "";
 
+  for (let word of words) {
+    // If adding this word goes past limit, wrap (but don't cut the word)
+    if ((currentLine + word).length > maxChars) {
+      lines.push(currentLine.trim());
+      currentLine = word + " ";
+    } else {
+      currentLine += word + " ";
+    }
+  }
+
+  // Push the last line if not empty
+  if (currentLine.trim().length > 0) {
+    lines.push(currentLine.trim());
+  }
+
+  return lines.join("<br>");
+}
 
 let currentZoomScale = 1;
 //const mapGroup = svg.append("g").attr("id", "mapGroup");
@@ -181,9 +215,9 @@ d3.json("us.json").then(us => {
     .attr("d", path)
     .attr("fill", d => {
       const admission = stateAdmission[d.id];
-      return (admission && admission <= year) ? "#8c8d91" : "#D3D3D3";
+      return (admission && admission <= year) ? "#8c8d91" : "#dcdcdc";
     })
-    .attr("stroke", "#fff");
+    .attr("stroke", "#fafafa");
 });
 
 class CityDot {
@@ -222,12 +256,14 @@ class CityDot {
       .attr("data-base-radius", radius)
       //.attr("fill", color)
       .style("fill", color)
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1)
+      .attr("stroke", "#444")
+      .attr("stroke-width", 1.5)
       .style("cursor", "pointer")
       .on("mouseenter", (event) => this.showPopup(event))
       .on("mousemove", (event) => this.updatePopupPosition(event))
-      .on("mouseleave", () => this.hidePopup());  }
+      .on("mouseleave", () => this.hidePopup());  
+    
+    }
 
       updatePopupPosition(event) {
         d3.select("#popup")
@@ -247,13 +283,15 @@ class CityDot {
       .style("left", (event.pageX + 10) + "px")
       .style("top", (event.pageY - 20) + "px")
       .style("display", "block")
+      .style("max-width", "300px") // <-- added max width
       .html(`
-        <strong>${this.city.name}</strong><br>
-        Population: ${this.city.population[year].toLocaleString()}<br>
-        Peak Decade: ${this.city.peakDecade} at ${getCityRank(this.city, this.city.peakDecade)}<br>
-        Rank: ${rank}
+        <span class="city-name">${this.city.name}</span><br>
+        <span class="label">Population:</span> ${this.city.population[year].toLocaleString()}<br>
+        <span class="label">Rank:</span> ${ordinalSuffix(rank)}<br>
+        <span class="label">Relative Peak Decade:</span> ${this.city.peakDecade} at ${ordinalSuffix(getCityRank(this.city, this.city.peakDecade))}<br>
+        <span class="label">At Its Relative Peak:</span> ${(this.city.info)}
       `);
-
+ 
     event.stopPropagation(); // Don't let body click immediately close it
   }
 }
@@ -363,6 +401,41 @@ function assignPeakDecades(cities) {
     city.peakDecade = Math.max(...bestDecades); // prefer latest if tied
   });
 }
+
+function drawCircle(cx, cy, r, fill) {
+  const circle = document.createElementNS(ns, "circle");
+  circle.setAttribute("cx", cx);
+  circle.setAttribute("cy", cy);
+  circle.setAttribute("r", r);
+  circle.setAttribute("fill", fill);
+  svg2.appendChild(circle);
+}
+
+const legendBox = document.getElementById("legend-box");
+
+function addLegendItem(color, text) {
+  const item = document.createElement("div");
+  item.className = "legend-item";
+
+  const colorCircle = document.createElement("div");
+  colorCircle.className = "legend-color";
+  colorCircle.style.background = color;
+
+  const label = document.createElement("span");
+  label.textContent = text;
+
+  item.appendChild(colorCircle);
+  item.appendChild(label);
+  legendBox.appendChild(item);
+}
+
+// Static legend entries
+addLegendItem("#8c8d91", "State");
+addLegendItem("#dcdcdc", "Not a state \n");
+
+// Gradient explanation
+addLegendItem("#DAA520", "Largest city in specified year");
+addLegendItem("#F0E68C", "#20th largest city in specified year");
 
 assignPeakDecades(cities);
 
