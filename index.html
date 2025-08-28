@@ -3,58 +3,354 @@
     <script src="https://unpkg.com/topojson-client@3"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v3.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v4.min.js"></script> 
+
+      <style>
+    /* Set the font for the entire document */
+    body {
+      font-family: 'Inter'; /* Fallback fonts included */
+      font-size: 16px; /* Optional: set base font size */
+      line-height: 1.5; /* Optional: improves readability */
+      color: #333; /* Optional: set default text color */
+      background-color: #f5f5eb;
+
+    zoom: 0.8; /* 80% zoom */
+    }
+
+    .city-name {
+  font-size: 1.2em;  /* slightly larger */
+  font-weight: bold;
+}
+
+.label {
+  font-weight: bold; /* bold the written text */
+}
+
+    #chart {
+      display: block;
+      margin: auto;
+    }
+
+    #legend-box {
+      background: white;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      width: fit-content;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin: 0.3rem 0;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      margin-right: 8px;
+      border: 1px solid #aaa;
+    }
+
+  </style>
+
 </head>
+
 
 <body>
 
-    <label for="yearSlider">Year: <span id="yearDisplay">1790</span></label><br>
-    <input type="range" id="yearSlider" min="1790" max="2020" step="10" value="1790">
-
-    <h1>Move the slider and see the top 20 cities change</h1>
-    <h2>Top 20 Metro Share: <span id="metroShareValue">Loading...</span> </h2>
-    <h2>Urban Population: <span id="urbanPercentValue">Loading...</span></h2>
-
-     <button id="resetZoom">Reset Zoom</button>
+    <h1 style="text-align: center;">
+  Move the Slider and See the Top 20 Cities Change
+</h1>
 
 
-  
-     <div id="popup" style="position: absolute; display: none; background: white; border: 1px solid #ccc; padding: 8px; pointer-events: none;"></div>
+<div class="slider-container">
+  <label for="yearSlider">Year: 
+    <span id="yearDisplay" class="year-box">1790</span>
+  </label><br><br>
 
-     <div id="popup" style="
-        position: absolute;
-        display: none;
-        background: white;
-        border: 1px solid #ccc;
-        padding: 8px;
-        pointer-events: none;
-        font-family: sans-serif;
-        font-size: 14px;
-        border-radius: 4px;
-        box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
-        
-    ">
-           
+  <input type="range" id="yearSlider" min="1790" max="2020" step="10" value="1790">
 </div>
 
-        <svg
-    
-        xmlns:svg="http://www.w3.org/2000/svg"
-        xmlns="http://www.w3.org/2000/svg"
-        version="1.0"
-        width="959"
-        height="593"
-        id="svg2">
+<style>
+  /* Center the container */
+  .slider-container {
+    text-align: center;
+    margin: 20px 0; /* optional spacing */
+  }
 
-        <g id="mapGroup">
-            <!-- Base map layer (for drawing states, land, etc.) -->
-            <g id="baseMapLayer"></g>
-        
-            <!-- City dot layer (for your interactive circles) -->
-            <g id="cityLayer"></g>
-          </g>
-        </svg>
+  /* Style the year display box */
+  .year-box {
+    display: inline-block;
+    min-width: 60px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    margin-left: 10px;
+    background: goldenrod;
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    /*transition: background 0.3s, transform 0.2s;
+  }
+
+  /* Optional: subtle bounce effect when slider moves */
+  .year-box.active {
+    transform: scale(1.2);
+  }
+
+  /* Style the slider track */
+  #yearSlider {
+    -webkit-appearance: none;
+    width: 300px;
+    height: 6px;
+    background: #ccc;
+    border-radius: 3px;
+    outline: none;
+  }
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  #yearSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: goldenrod;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #999;
+    margin-top: -7px;
+  }
+
+  /* Firefox */
+  #yearSlider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: goldenrod;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #999;
+  }
+
+  /* Optional hover effect */
+  #yearSlider::-webkit-slider-thumb:hover,
+  #yearSlider::-moz-range-thumb:hover {
+    background: orange;
+  }
+</style>
+
+<script>
+  const slider = document.getElementById('yearSlider');
+  const display = document.getElementById('yearDisplay');
+
+  slider.addEventListener('input', () => {
+    display.textContent = slider.value;
+
+    // Add temporary "active" class for a bounce effect
+    display.classList.add('active');
+    setTimeout(() => display.classList.remove('active'), 150);
+  });
+</script>
+
+<script>
+  const slider = document.getElementById('yearSlider');
+  const display = document.getElementById('yearDisplay');
+
+  slider.addEventListener('input', () => {
+    display.textContent = slider.value;
+
+    // Add temporary "active" class for a bounce effect
+    display.classList.add('active');
+    setTimeout(() => display.classList.remove('active'), 150);
+  });
+</script>
 
 
+<style>
+  /* Style the slider track */
+  #yearSlider {
+    -webkit-appearance: none; /* Remove default style */
+    width: 300px;
+    height: 6px;
+    background: #ccc;
+    border-radius: 3px;
+    outline: none;
+  }
+
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  #yearSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: goldenrod;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #999;
+    margin-top: -7px; /* Center the thumb on the track */
+  }
+
+  /* Firefox */
+  #yearSlider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: goldenrod;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid #999;
+  }
+
+  /* Optional: hover effect */
+  #yearSlider::-webkit-slider-thumb:hover {
+    background: orange;
+  }
+  #yearSlider::-moz-range-thumb:hover {
+    background: orange;
+  }
+</style>
+
+<script>
+  const slider = document.getElementById('yearSlider');
+  const display = document.getElementById('yearDisplay');
+
+  slider.addEventListener('input', () => {
+    display.textContent = slider.value;
+  });
+</script>
+
+  <div id="popup" style="
+      position: absolute;
+      display: none;
+      background: #fafafa;
+      border: 1px solid #ccc;
+      padding: 8px;
+      pointer-events: none;
+      font-family: sans-serif;
+      font-size: 14px;
+      border-radius: 4px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+  "></div>
+
+<div class="center-container">
+
+<h2 class="stat-line">Percent of US Population Living in Top 20 Metro Areas: <span id="metroShareValue">Loading...</span></h2>
+<h2 class="stat-line">Percent of US Population Living in Any Urban Area: <span id="urbanPercentValue">Loading...</span></h2>
+
+<style>
+  .stat-line {
+    font-family: sans-serif;
+    font-size: 1.3em;             /* slightly larger but not overwhelming */
+    font-weight: normal;           /* base weight */
+    color: #333;                   /* dark text for readability */
+    text-align: center;            /* center on page */
+    margin: 10px 0;
+  }
+
+  /* Style the labels inside the stat-line */
+  .stat-line span {
+    font-weight: bold;             /* bold the dynamic values */
+    color: goldenrod;              /* match slider/thumb/button theme */
+  }
+
+  /* Optional subtle shadow for headings */
+  .stat-line {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+</style>
+
+<button id="resetZoom">Reset Zoom</button>
+
+<style>
+  #resetZoom {
+    background-color: goldenrod;   /* match slider/thumb color */
+    color: white;                  /* text color */
+    font-weight: bold;
+    padding: 8px 16px;             /* comfortable size */
+    border: none;                  /* remove default border */
+    border-radius: 8px;            /* rounded corners */
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* subtle depth */
+    transition: background 0.3s, transform 0.2s; /* smooth hover transition */
+    font-family: sans-serif;
+    font-size: 1em;
+  }
+
+  #resetZoom:hover {
+    background-color: darkorange; /* subtle hover color change */
+    transform: translateY(-2px);  /* subtle lift effect */
+  }
+
+  #resetZoom:active {
+    transform: translateY(0);    /* reset when clicked */
+  }
+</style>
+
+
+<div class="svg-container">
+  <svg
+      xmlns:svg="http://www.w3.org/2000/svg"
+      xmlns="http://www.w3.org/2000/svg"
+      version="1.0"
+      width="959"
+      height="593"
+      id="svg2"
+      style="display: block; margin: 0 auto; background-color: white;">
+      
+      <g id="mapGroup">
+          <!-- Base map layer (for drawing states, land, etc.) -->
+          <g id="baseMapLayer"></g>
+      
+          <!-- City dot layer (for your interactive circles) -->
+          <g id="cityLayer"></g>
+      </g>
+  </svg>
+</div>
+
+<style>
+  .svg-container {
+    display: inline-block;       /* shrink to fit SVG */
+    border: 5px solid black;     /* thick black border */
+    padding: 5px;                /* optional space between SVG and border */
+    margin: 20px auto;           /* center horizontally */
+  }
+</style>
+
+</div>
+
+<style>
+  .center-container {
+    text-align: center; /* horizontally centers inline elements like h2 and span */
+  }
+
+  /* Optionally center the button as a block element */
+  .center-container button {
+    display: block;
+    margin: 10px auto; /* center horizontally with some spacing */
+  }
+</style>
+
+<div id="container">
+  <svg id="chart" width="200" height="20"></svg>
+  <div id="legend-box"><b>Map Legend</b></div>
+</div>
+
+<style>
+
+#container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centers both horizontally */
+  justify-content: center;
+}
+
+#legend-box {
+  margin-top: 10px;   /* spacing under SVG */
+  padding: 10px;
+  background: white;
+  border: 1px solid #ccc; /* optional border */
+  text-align: center;     /* center text inside */
+}
+</style>
 
 
         <script src="map.js"></script>
@@ -67,3 +363,4 @@
 
 
 </body>
+
