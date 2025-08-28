@@ -2,11 +2,11 @@
 
 
 class City {
-  constructor(name, populationByYear, coords, peakDecade) {
+  constructor(name, populationByYear, coords, info) {
     this.name = name;
     this.population = populationByYear;
     this.coords = coords;
-    this.peakDecade = peakDecade;
+    this.info = info;
   }
 }
 
@@ -35,7 +35,7 @@ const nyc = new City("New York City", {
     2000: 18689000,
     2010: 20009000,
     2020: 21162000,
-}, [-74.006, 40.7128], 2020);
+}, [-74.006, 40.7128], "America's leading economic and cultural hub for over two centuries.");
 
 const chicago = new City("Chicago", {
     1850: 40000,
@@ -56,7 +56,7 @@ const chicago = new City("Chicago", {
     2000: 8419000,
     2010: 9023000,
     2020: 9181000,
-}, [-87.6298, 41.8781], 1950);
+}, [-87.6298, 41.8781], "Diverse manufacturing, food processing, and logistics hub at the heart of the Midwest. ");
 
 const la = new City("Los Angeles", {
     1910: 374000,
@@ -71,7 +71,7 @@ const la = new City("Los Angeles", {
     2000: 14661000,
     2010: 15750000,
     2020: 17740000,
-}, [-118.2437, 34.0522], 2020);
+}, [-118.2437, 34.0522], "Global capital of film and television, along with leading many other industries.");
 
 const sf = new City ("Bay Area",{
     1860: 57000,
@@ -91,7 +91,7 @@ const sf = new City ("Bay Area",{
     2000: 5973000,
     2010: 6828000,
     2020: 7530000,
-},[-122.4194, 37.7749], 2020);
+},[-122.4194, 37.7749], "Home to Silicon Valley and the heart of the global technology industry.");
 
 
 const dallas = new City ("Dallas",{
@@ -103,7 +103,7 @@ const dallas = new City ("Dallas",{
     2000: 4445000,
     2010: 5685000,
     2020: 6884000,
-},[-96.7969, 32.7767], 2000 )
+},[-96.7969, 32.7767], "Its high-capacity airport and pro-business environment have led to more investment and more people.")
 
 const houston = new City ("Houston",{
     1940: 471000,
@@ -115,7 +115,7 @@ const houston = new City ("Houston",{
     2000: 4063000,
     2010: 5382000,
     2020: 6499000,
-},[-95.3698, 29.7604], 2000 )
+},[-95.3698, 29.7604], "A global center for the oil and gas industry, the city is highly specialized in the energy sector." )
 
 const philly = new City ("Philadelphia",{
     1790: 44100,
@@ -142,7 +142,7 @@ const philly = new City ("Philadelphia",{
     2000: 5418000,
     2010: 6003000,
     2020: 6268000,
-},[-75.1652, 39.9526], 2000 )
+},[-75.1652, 39.9526], "The nation's temporary capital, it was a hub for trade and finance." )
 
 const miami = new City ("Miami",{
     1960: 1173000,
@@ -152,7 +152,7 @@ const miami = new City ("Miami",{
     2000: 4919000,
     2010: 5513000,
     2020: 6078000,
-},[-80.1918, 25.7617], 2000 )
+},[-80.1918, 25.7617], "Latin American immigration (~43% of the population speaks Spanish at home) combined with strong economic growth." )
 
 const atlanta = new City ("Atlanta",{
     1970: 1172000,
@@ -161,7 +161,7 @@ const atlanta = new City ("Atlanta",{
     2000: 3500000,
     2010: 4743000,
     2020: 5431000,
-},[-84.3880, 33.7490], 2000 )
+},[-84.3880, 33.7490], "Investing in Hartsfield-Jackson Airport (now the world's busiest airport) attracted people and corporate investment." )
 
 const dc = new City ("Washington D.C.",{
     1800: 11200,
@@ -187,7 +187,7 @@ const dc = new City ("Washington D.C.",{
     2000: 3934000,
     2010: 4697000,
     2020: 5356000,
-},[-77.0369, 38.9072], 2000 )
+},[-77.0369, 38.9072], "Becoming the capital led to a boom in construction." )
 
 const boston = new City ("Boston",{
     1790: 18300,
@@ -214,7 +214,7 @@ const boston = new City ("Boston",{
     2000: 4032000,
     2010: 4407000,
     2020: 4640000,
-},[-71.0589, 42.3601], 2000 )
+},[-71.0589, 42.3601], "Major manufacturing hub for clothing, shipbuilding, and book publishing." )
 
 const phoenix = new City ("Phoenix",{
     1980: 1409000,
@@ -222,7 +222,7 @@ const phoenix = new City ("Phoenix",{
     2000: 2975000,
     2010: 3863000,
     2020: 4475000,
-},[-112.0740, 33.4484], 2000 )
+},[-112.0740, 33.4484], "A combination of low costs and air conditioning helped this desert city boom." )
 
 const detroit = new City ("Detroit",{
     1840: 21200,
@@ -244,7 +244,7 @@ const detroit = new City ("Detroit",{
     2000: 3903000,
     2010: 4160000,
     2020: 4298000,
-},[-83.0458, 42.3314], 2000 )
+},[-83.0458, 42.3314], "Cradle of the global automobile industry." )
 
 const seattle = new City ("Seattle",{
     1920: 334000,
@@ -256,13 +256,13 @@ const seattle = new City ("Seattle",{
     2000: 3018000,
     2010: 3446000,
     2020: 4003000,
-},[-122.3321, 47.6062], 2000 )
+},[-122.3321, 47.6062], "Leader in aerospace and America's emerging software sector." )
 
 const denver = new City ("Denver",{
     2000: 2231000,
     2010: 2716000,
     2020: 3167000,
-},[-104.9903, 39.7392], 2000 )
+},[-104.9903, 39.7392], "Outdoor lifestyles drew workers and industry." )
 
 const sd = new City ("San Diego",{
     1970: 1198000,
@@ -271,7 +271,7 @@ const sd = new City ("San Diego",{
     2000: 2674000,
     2010: 2985000,
     2020: 3152000,
-},[-117.1611, 32.7157], 2000 )
+},[-117.1611, 32.7157], "A port city with a major military presence and aerospace industry." )
 
 const minneapolis = new City ("Minneapolis",{
     1880: 94000,
@@ -289,14 +289,14 @@ const minneapolis = new City ("Minneapolis",{
     2000: 2389000,
     2010: 2651000,
     2020: 2968000,
-},[-93.2650, 44.9778], 2000 )
+},[-93.2650, 44.9778], "Known as 'Mill City', it thrived as a wheat processing town." )
 
 const tampa = new City ("Tampa,",{
     1990: 1709000,
     2000: 2062000,
     2010: 2442000,
     2020: 2783000,
-},[-82.4572, 27.9506], 2000 )
+},[-82.4572, 27.9506], "Major port and tourism hub." )
 
 const baltimore = new City ("Baltimore",{
     1790: 13500,
@@ -323,7 +323,7 @@ const baltimore = new City ("Baltimore",{
     2000: 2389000,
     2010: 2497000,
     2020: 2531000,
-},[-76.6122, 39.2904], 2000 )
+},[-76.6122, 39.2904], "A vital port for trade and shipbuilding, as well as a major steel manufacturer." )
 
 const cleveland = new City ("Cleveland",{
     1860: 49000,
@@ -340,7 +340,7 @@ const cleveland = new City ("Cleveland",{
     1970: 1960000,
     1980: 1752000,
     2020: 2506000,
-},[-81.6944, 41.4993], 2000 )
+},[-81.6944, 41.4993], "A major center for steel and chemical manufacturing." )
 
 const stLouis = new City ("St. Louis",{
     1840: 28400,
@@ -361,7 +361,7 @@ const stLouis = new City ("St. Louis",{
     1990: 1947000,
     2000: 2078000,
     2010: 2246000,
-},[-90.1994, 38.6270], 2000 )
+},[-90.1994, 38.6270], "An inland port on the Mississippi, the city became a major food processing hub, especially for beer." )
 
 const pittsburgh = new City ("Pittsburgh",{
     1820: 7300,
@@ -382,7 +382,7 @@ const pittsburgh = new City ("Pittsburgh",{
     1970: 2124000,
     1980: 1810000,
     1990: 1744000,
-},[-79.9959, 40.4406], 2000 )
+},[-79.9959, 40.4406], "Produced half of America's steel." )
 
 const milwaukee = new City ("Milwaukee",{
     1860: 48000,
@@ -397,7 +397,7 @@ const milwaukee = new City ("Milwaukee",{
     1950: 829000,
     1960: 1150000,
     1970: 1252000,
-},[-87.9065, 43.0389], 2000 )
+},[-87.9065, 43.0389], "The nation's brewing hub, home to Pabst, Schlitz, Blatz, and Miller." )
 
 const buffalo = new City ("Buffalo",{
     1830: 8700,
@@ -414,7 +414,7 @@ const buffalo = new City ("Buffalo",{
     1940: 708000,
     1950: 895000,
     1960: 1054000,
-},[-78.8784, 42.8864], 2000 )
+},[-78.8784, 42.8864], "At the end of the Erie Canal, refined grain from the Midwest for the East Coast." )
 
 const cincinnati = new City ("Cincinnati",{
     1820: 9600,
@@ -432,7 +432,7 @@ const cincinnati = new City ("Cincinnati",{
     1940: 559000,
     1950: 813000,
     1960: 994000,
-},[-84.5120, 39.1031], 2000 )
+},[-84.5120, 39.1031], "Known as 'Porkopolis', the city was America's pork-processing hub." )
 
 const ks = new City ("Kansas City",{
     1890: 165000,
@@ -443,7 +443,7 @@ const ks = new City ("Kansas City",{
     1940: 632000,
     1950: 698000,
     1960: 921000,
-},[-94.5786, 39.0997], 2000 )
+},[-94.5786, 39.0997], "Major meatpacking and transportation hub." )
 
 const nola = new City ("New Orleans",{
     1810: 17200,
@@ -461,12 +461,12 @@ const nola = new City ("New Orleans",{
     1930: 469000,
     1940: 557000,
     1950: 660000,
-},[-90.0715, 29.9511], 2000 )
+},[-90.0715, 29.9511], "Crucial port connecting the Mississippi and the Gulf." )
 
 const indianapolis = new City ("Indianapolis",{
     1920: 379000,
     1930: 323000,
-},[-86.1581, 39.7684], 2000 )
+},[-86.1581, 39.7684], "Railway hub at the center of Indiana and close to other major cities." )
 
 const providence = new City ("Providence",{
     1790: 6400,
@@ -482,7 +482,7 @@ const providence = new City ("Providence",{
     1890: 163000,
     1900: 243000,
     1910: 274000,
-},[-71.4128, 41.8240], 2000 )
+},[-71.4128, 41.8240], "Hub for shipping and skilled artisans, especially in jewelry and silversmithing." )
 
 const albany = new City ("Albany",{
     1790: 3500,
@@ -498,7 +498,7 @@ const albany = new City ("Albany",{
     1890: 189000,
     1900: 188000,
     1910: 283000,
-},[-73.7562, 42.6526], 2000 )
+},[-73.7562, 42.6526], "A connecting node between the Atlantic and Great Lakes on the Erie Canal, allowing it to trade timber, wheat, furs, and manufactured goods." )
 
 const louisville = new City ("Louisville",{
     1830: 10300,
@@ -509,7 +509,7 @@ const louisville = new City ("Louisville",{
     1880: 143000,
     1890: 183000,
     1900: 227000,
-},[-85.7585, 38.2527], 2000 )
+},[-85.7585, 38.2527], "Based on the Falls of the Ohio, which forced ships to unload their goods, making it a natural port city." )
 
 const rochester = new City ("Rochester",{
     1830: 9200,
@@ -518,7 +518,7 @@ const rochester = new City ("Rochester",{
     1860: 56000,
     1870: 73000,
     1880: 103000,
-},[-77.6109, 43.1610], 2000 )
+},[-77.6109, 43.1610], "Major grain processing hub, largely due to waterpower from the Genesee River." )
 
 const nh = new City ("New Haven",{
     1790: 4500,
@@ -527,7 +527,7 @@ const nh = new City ("New Haven",{
     1830: 10200,
     1840: 21900,
     1870: 65000,
-},[-72.9279, 41.3083], 2000 )
+},[-72.9279, 41.3083], "Exporter of agricultural products and importer of European-manufactured goods." )
 
 const portland = new City ("Portland",{
     1810: 7200,
@@ -535,33 +535,33 @@ const portland = new City ("Portland",{
     1830: 12600,
     1840: 28600,
     1850: 36000, 
-},[-70.2553, 43.6615], 2000 )
+},[-70.2553, 43.6615], "Exported fish, timber, and ships." )
 
 const syracuse = new City ("Syracuse",{
     1850: 38000, 
-},[-76.1474, 43.0481], 2000 )
+},[-76.1474, 43.0481], "Major producer of salt for the nation." )
 
 const nb = new City ("New Bedford",{
     1840: 24100, 
-},[-70.9342, 41.6362], 2000 )
+},[-70.9342, 41.6362], "A global leader in whaling, immortalized in Herman Melville's Moby-Dick.  " )
 
 const newark = new City ("Newark",{
     1830: 14400,
     1840: 29800,
     1850: 57000, 
     1860: 103000,
-},[-74.1724, 40.7357], 2000 )
+},[-74.1724, 40.7357], "Specialized manufacturing hub, particularly in leather and jewelry." )
 
 const nantucket = new City ("Nantucket",{
     1790: 4600,
     1800: 5600,
     1810: 6800,
     1820: 7300,
-},[-70.0995, 41.2835], 2000 )
+},[-70.0995, 41.2835], "The nation's leading whaling port." )
 
 const hartford = new City ("Hartford",{
     1790: 2700,
-},[-72.6851, 41.7658], 2000 )
+},[-72.6851, 41.7658], "A nascent insurance center, as well as hosting a robust artisan class." )
 
 const richmond = new City ("Richmond",{
     1790: 3800,
@@ -569,7 +569,7 @@ const richmond = new City ("Richmond",{
     1810: 9700,
     1820: 12100,
     1830: 16100,
-},[-77.4360, 37.5407], 2000 )
+},[-77.4360, 37.5407], "Major tobacco processing hub, along with other food processing." )
 
 const norfolk = new City ("Norfolk",{
     1790: 3000,
@@ -577,7 +577,7 @@ const norfolk = new City ("Norfolk",{
     1810: 9200,
     1820: 8500,
     1830: 9800,
-},[-76.2859, 36.8508], 2000 )
+},[-76.2859, 36.8508], "Chesapeake Bay port exporting Southern agriculture." )
 
 const charleston = new City ("Charleston",{
     1790: 16400,
@@ -587,7 +587,7 @@ const charleston = new City ("Charleston",{
     1830: 30300,
     1840: 42600,
     1850: 50000, 
-},[-79.9311, 32.7765], 2000 )
+},[-79.9311, 32.7765], "The South's main port, importing enslaved Africans and exporting cash crops. " )
 
 const salem = new City ("Salem",{
     1790: 13600,
@@ -595,59 +595,59 @@ const salem = new City ("Salem",{
     1810: 23100,
     1820: 22600,
     1830: 27300,
-},[-70.8967, 42.5195], 2000 )
+},[-70.8967, 42.5195], "A port that traded extensively with Asia." )
 
 const newport = new City ("Newport",{
     1790: 6700,
     1800: 6700,
     1810: 7900,
     1820: 7300,
-},[-71.3128, 41.4901], 2000 )
+},[-71.3128, 41.4901], "A port for distilling rum and a center for privateers. " )
 
 const gloucester = new City ("Gloucester",{
     1790: 5300,
     1800: 5300,
     1810: 5900,
-},[-70.6653, 42.6159], 2000 )
+},[-70.6653, 42.6159], "Port town skilled at deep-sea fishing and salting cod." )
 
 const newburyport = new City ("Newburyport",{
     1790: 4800,
     1800: 6000,
     1810: 7600,
-},[-70.8770, 42.8126], 2000 )
+},[-70.8770, 42.8126], "Major fishing and trading port." )
 
 const portsmouth = new City ("Portsmouth",{
     1790: 4700,
     1800: 6000,
     1810: 7600,
     1820: 7300,
-},[-70.8233, 43.0718], 2000 )
+},[-70.8233, 43.0718], "A port city, with specialities in shipbuilding and lumber." )
 
 const middleborough = new City ("Middleborough",{
     1790: 4500,
     1800: 4500,
-},[-70.9401, 41.9118], 2000 )
+},[-70.9401, 41.9118], "Proximity to iron deposits made it a center for tool production for New England." )
 
 const alexandria = new City ("Alexandria",{
     1790: 2800,
-},[-77.0469, 38.8048], 2000 )
+},[-77.0469, 38.8048], "A major port city, it became a suburb of Washington, DC after it became the capital." )
 
 const petersburg = new City ("Petersburg",{
     1790: 2800,
-},[-77.4019, 37.2279], 2000 )
+},[-77.4019, 37.2279], "Hub for textile production and tobacco manufacturing." )
 
 const savannah = new City ("Savannah",{
     1800: 5200,
     1820: 7500,
-},[-81.0998, 32.0809], 2000 )
+},[-81.0998, 32.0809], "A port town exporting cotton and rice." )
 
 const nl = new City ("New London",{
     1800: 5200,
-},[-72.0995, 41.3557], 2000 )
+},[-72.0995, 41.3557], "A major port for whaling and rum." )
 
 const schenectady = new City ("Schenectady",{
     1800: 5300,
     1810: 5900,
-},[-73.9201, 42.8142], 2000 )
+},[-73.9201, 42.8142], "Transportation improvements along the Mohawk River made the city a natural gateway to the west for settlers." )
 
 // State admission years (FIPS -> Year)
