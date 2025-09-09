@@ -1,117 +1,142 @@
+<!doctype html>
+<html lang="en">
 <head>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://unpkg.com/topojson-client@3"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v3.min.js"></script>
-    <script src="https://d3js.org/d3-geo-projection.v4.min.js"></script> 
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 
-      <style>
-    /* Set the font for the entire document */
-    body {
-      font-family: 'Inter'; /* Fallback fonts included */
-      font-size: 16px; /* Optional: set base font size */
-      line-height: 1.5; /* Optional: improves readability */
-      color: #333; /* Optional: set default text color */
-      background-color: #f5f5eb;
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://unpkg.com/topojson-client@3"></script>
 
-    zoom: 0.8; /* 80% zoom */
+  <title>Top 20 Cities Map</title>
+
+  <style>
+    :root{
+      --map-width: 959px;
+      --map-height: 593px;
+      --box-width: 350px;   
+      --box-gap: 40px;      
     }
 
-    .city-name {
-  font-size: 1.2em;  /* slightly larger */
-  font-weight: bold;
-}
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f5f5eb;
+      color: #222;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      zoom: 0.8; 
+    }
 
-.label {
-  font-weight: bold; /* bold the written text */
-}
+    header {
+      text-align: center;
+      padding: 18px 12px 6px;
+    }
+    h1 { margin: 0; font-size: 28px; font-weight: 800; }
 
-    #chart {
-      display: block;
-      margin: auto;
+    .controls { text-align:center; margin:8px 0 6px; }
+    .stats { text-align:center; margin:6px 0 18px; }
+    .val { font-weight:700; color: goldenrod; }
+
+    .stage {
+      padding: 6px 24px 40px;
+    }
+
+    .map-wrapper {
+      width: var(--map-width);
+      margin: 0 auto;            
+      position: relative;       
+      min-height: var(--map-height);
+      box-sizing: border-box;
+    }
+
+    .svg-panel {
+      width: 100%;
+      margin: 0 auto;
+      border: 5px solid #000;    
+      padding: 6px;
+      background: #fff;
+      box-sizing: border-box;
+    }
+    .svg-panel svg { display:block; width:100%; height:auto; }
+
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      padding: 12px 14px;
+      width: var(--box-width);
+      box-sizing: border-box;
+      text-align: center;
+      font-family: sans-serif;
+    }
+    .card-title { font-weight:800; margin-bottom: 8px; }
+    #city-list { list-style:none; padding:0; margin:0; font-size:14px; line-height:1.6; text-align:center; }
+
+    #top-cities-card {
+      position: absolute;
+      left: calc(-1 * (var(--box-width) + var(--box-gap)));
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
     }
 
     #legend-box {
-      background: white;
-      padding: 1rem;
-      margin-top: 1rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      width: fit-content;
+      position: absolute;
+      right: calc(-1 * (var(--box-width) + var(--box-gap)));
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      text-align: left; /
+    }
+
+    .legend-item { display:flex; align-items:center; gap:10px; margin:8px 0; }
+    .legend-dot { width:18px; height:18px; border-radius:50%; border:1px solid #aaa; flex:0 0 18px; }
+
+    .year-box { display:inline-block; min-width:60px; text-align:center; background:goldenrod; color:#fff; padding:6px 10px; border-radius:8px; font-weight:700; }
+    #yearSlider { width:360px; height:6px; background:#ccc; border-radius:4px; vertical-align: middle; }
+    #resetZoom { background:goldenrod; color:white; border:none; padding:8px 14px; border-radius:8px; cursor:pointer; font-weight:700; }
+
+    #popup {
+      position: absolute;
+      display: none;
+      background: #fafafa;
+      border: 1px solid #ccc;
+      padding: 8px;
+      pointer-events: none;
+      font-family: sans-serif;
+      font-size: 14px;
+      border-radius: 4px;
+      box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
+      max-width: 300px;
+    }
+
+    @media (max-width: 1100px) {
+      .map-wrapper { width: 100%; min-height: auto; padding: 0 12px; }
+      #top-cities-card, #legend-box {
+        position: static;
+        transform: none;
+        margin: 12px auto;
+        width: min(92%, 540px);
+        text-align: center;
+      }
+      .svg-panel { border-width: 3px; }
     }
 
     .legend-item {
       display: flex;
       align-items: center;
-      margin: 0.3rem 0;
+      margin: 4px 0;
     }
 
     .legend-color {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%; 
       margin-right: 8px;
-      border: 1px solid #aaa;
+      display: inline-block;
     }
 
-  </style>
-
-</head>
-
-
-<body>
-
-    <h1 style="text-align: center;">
-  Move the Slider and See the Top 20 Cities Change
-</h1>
-
-
-<div class="slider-container">
-  <label for="yearSlider">Year: 
-    <span id="yearDisplay" class="year-box">1790</span>
-  </label><br><br>
-
-  <input type="range" id="yearSlider" min="1790" max="2020" step="10" value="1790">
-</div>
-
-<style>
-  /* Center the container */
-  .slider-container {
-    text-align: center;
-    margin: 20px 0; /* optional spacing */
-  }
-
-  /* Style the year display box */
-  .year-box {
-    display: inline-block;
-    min-width: 60px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 1.2em;
-    padding: 5px 10px;
-    margin-left: 10px;
-    background: goldenrod;
-    color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    /*transition: background 0.3s, transform 0.2s;
-  }
-
-  /* Optional: subtle bounce effect when slider moves */
-  .year-box.active {
-    transform: scale(1.2);
-  }
-
-  /* Style the slider track */
-  #yearSlider {
-    -webkit-appearance: none;
-    width: 300px;
-    height: 6px;
-    background: #ccc;
-    border-radius: 3px;
-    outline: none;
-  }
-
-  /* Webkit browsers (Chrome, Safari, Edge) */
   #yearSlider::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 20px;
@@ -123,7 +148,6 @@
     margin-top: -7px;
   }
 
-  /* Firefox */
   #yearSlider::-moz-range-thumb {
     width: 20px;
     height: 20px;
@@ -133,234 +157,120 @@
     border: 2px solid #999;
   }
 
-  /* Optional hover effect */
   #yearSlider::-webkit-slider-thumb:hover,
   #yearSlider::-moz-range-thumb:hover {
     background: orange;
   }
-</style>
 
-<script>
-  const slider = document.getElementById('yearSlider');
-  const display = document.getElementById('yearDisplay');
-
-  slider.addEventListener('input', () => {
-    display.textContent = slider.value;
-
-    // Add temporary "active" class for a bounce effect
-    display.classList.add('active');
-    setTimeout(() => display.classList.remove('active'), 150);
-  });
-</script>
-
-<script>
-  const slider = document.getElementById('yearSlider');
-  const display = document.getElementById('yearDisplay');
-
-  slider.addEventListener('input', () => {
-    display.textContent = slider.value;
-
-    // Add temporary "active" class for a bounce effect
-    display.classList.add('active');
-    setTimeout(() => display.classList.remove('active'), 150);
-  });
-</script>
-
-
-<style>
-  /* Style the slider track */
-  #yearSlider {
-    -webkit-appearance: none; /* Remove default style */
-    width: 300px;
-    height: 6px;
-    background: #ccc;
-    border-radius: 3px;
-    outline: none;
-  }
-
-  /* Webkit browsers (Chrome, Safari, Edge) */
-  #yearSlider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    background: goldenrod;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid #999;
-    margin-top: -7px; /* Center the thumb on the track */
-  }
-
-  /* Firefox */
-  #yearSlider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: goldenrod;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2px solid #999;
-  }
-
-  /* Optional: hover effect */
-  #yearSlider::-webkit-slider-thumb:hover {
-    background: orange;
-  }
-  #yearSlider::-moz-range-thumb:hover {
-    background: orange;
-  }
-</style>
-
-<script>
-  const slider = document.getElementById('yearSlider');
-  const display = document.getElementById('yearDisplay');
-
-  slider.addEventListener('input', () => {
-    display.textContent = slider.value;
-  });
-</script>
-
-  <div id="popup" style="
-      position: absolute;
-      display: none;
-      background: #fafafa;
-      border: 1px solid #ccc;
-      padding: 8px;
-      pointer-events: none;
-      font-family: sans-serif;
-      font-size: 14px;
-      border-radius: 4px;
-      box-shadow: 0px 2px 6px rgba(0,0,0,0.15);
-  "></div>
-
-<div class="center-container">
-
-<h2 class="stat-line">Percent of US Population Living in Top 20 Metro Areas: <span id="metroShareValue">Loading...</span></h2>
-<h2 class="stat-line">Percent of US Population Living in Any Urban Area: <span id="urbanPercentValue">Loading...</span></h2>
-
-<style>
-  .stat-line {
+    #popup {
+    position: absolute;
+    display: none;
+    background: #fafafa;
+    border: 1px solid #ccc;
+    padding: 10px 12px;
+    pointer-events: none;
     font-family: sans-serif;
-    font-size: 1.3em;             /* slightly larger but not overwhelming */
-    font-weight: normal;           /* base weight */
-    color: #333;                   /* dark text for readability */
-    text-align: center;            /* center on page */
-    margin: 10px 0;
+    font-size: 14px;
+    border-radius: 6px;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.2);
+    z-index: 9999; 
+    max-width: 280px;
   }
 
-  /* Style the labels inside the stat-line */
-  .stat-line span {
-    font-weight: bold;             /* bold the dynamic values */
-    color: goldenrod;              /* match slider/thumb/button theme */
-  }
-
-  /* Optional subtle shadow for headings */
-  .stat-line {
-    text-shadow: 0 1px 2px rgba(0,0,0,0.15);
-  }
-</style>
-
-<button id="resetZoom">Reset Zoom</button>
-
-<style>
-  #resetZoom {
-    background-color: goldenrod;   /* match slider/thumb color */
-    color: white;                  /* text color */
+  #popup .city-name {
     font-weight: bold;
-    padding: 8px 16px;             /* comfortable size */
-    border: none;                  /* remove default border */
-    border-radius: 8px;            /* rounded corners */
-    cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* subtle depth */
-    transition: background 0.3s, transform 0.2s; /* smooth hover transition */
-    font-family: sans-serif;
-    font-size: 1em;
-  }
-
-  #resetZoom:hover {
-    background-color: darkorange; /* subtle hover color change */
-    transform: translateY(-2px);  /* subtle lift effect */
-  }
-
-  #resetZoom:active {
-    transform: translateY(0);    /* reset when clicked */
-  }
-</style>
-
-
-<div class="svg-container">
-  <svg
-      xmlns:svg="http://www.w3.org/2000/svg"
-      xmlns="http://www.w3.org/2000/svg"
-      version="1.0"
-      width="959"
-      height="593"
-      id="svg2"
-      style="display: block; margin: 0 auto; background-color: white;">
-      
-      <g id="mapGroup">
-          <!-- Base map layer (for drawing states, land, etc.) -->
-          <g id="baseMapLayer"></g>
-      
-          <!-- City dot layer (for your interactive circles) -->
-          <g id="cityLayer"></g>
-      </g>
-  </svg>
-</div>
-
-<style>
-  .svg-container {
-    display: inline-block;       /* shrink to fit SVG */
-    border: 5px solid black;     /* thick black border */
-    padding: 5px;                /* optional space between SVG and border */
-    margin: 20px auto;           /* center horizontally */
-  }
-</style>
-
-</div>
-
-<style>
-  .center-container {
-    text-align: center; /* horizontally centers inline elements like h2 and span */
-  }
-
-  /* Optionally center the button as a block element */
-  .center-container button {
+    font-size: 15px;
+    margin-bottom: 1px;
     display: block;
-    margin: 10px auto; /* center horizontally with some spacing */
   }
-</style>
 
-<div id="container">
-  <svg id="chart" width="200" height="20"></svg>
-  <div id="legend-box"><b>Map Legend</b></div>
+  #popup .label {
+    font-weight: bold;
+  }
+
+  #play-button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+  #play-button {
+  background-color: goldenrod;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  margin: 10px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+#play-button:hover {
+  background-color: #e09e00;
+}
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Urban Growth in America, 1790–2020</h1>
+  </header>
+
+  <div class="controls" style="text-align:center; margin-bottom: 10px;">
+    <label for="yearSlider">Year:
+      <span id="yearDisplay" class="year-box">1790</span>
+    </label>
+    <div style="margin-top:10px;">
+      <input id="yearSlider" type="range" min="1790" max="2020" step="10" value="1790" />
+    </div>
+  </div>
+
+  <div id="play-button-container">
+    <button id="play-button">▶ Play</button>
+  </div>
 </div>
 
-<style>
 
-#container {
-  display: flex;
-  flex-direction: column;
-  align-items: center; /* centers both horizontally */
-  justify-content: center;
-}
+  <div class="stats">
+    <h3 style="margin:6px 0;">Percent of US Population Living in Top 20 Metro Areas: <span id="metroShareValue" class="val">Loading...</span></h3>
+    <h3 style="margin:6px 0;">Percent of US Population Living in Any Urban Area: <span id="urbanPercentValue" class="val">Loading...</span></h3>
+    <div style="margin:10px 0;"><button id="resetZoom">Reset Zoom</button></div>
+  </div>
 
-#legend-box {
-  margin-top: 10px;   /* spacing under SVG */
-  padding: 10px;
-  background: white;
-  border: 1px solid #ccc; /* optional border */
-  text-align: center;     /* center text inside */
-}
-</style>
+  <div class="stage">
+    <div class="map-wrapper">
+      <div id="top-cities-card" class="card">
+        <div class="card-title">Largest Cities in <span id="top-cities-year">1790</span></div>
+        <ul id="city-list"></ul>
+      </div>
 
+      <div class="svg-panel" role="img" aria-label="US map">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          id="svg2"
+          width="959"
+          height="593"
+          style="background-color:#fff;">
+          <g id="mapGroup">
+            <g id="baseMapLayer"></g>
+            <g id="cityLayer"></g>
+          </g>
+        </svg>
+      </div>
 
-        <script src="map.js"></script>
+      <div id="legend-box" class="card">
+        <div style="font-weight:800; text-align:center; margin-bottom:8px;">Map Legend</div>
+      </div>
+    </div>
+  </div>
 
+    <div id="popup"></div>
 
-
-
-    <script src="CityList.js"></script>
-    <script src="Cities.js"></script>
-
-
+  <script src="map.js"></script>
+  <script src="CityList.js"></script>
+  <script src="Cities.js"></script>
 </body>
-
+</html>
