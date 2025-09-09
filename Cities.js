@@ -7,7 +7,7 @@ const svg2 = document.getElementById("chart");
 const ns = "http://www.w3.org/2000/svg";
 
 function ordinalSuffix(n) {
-  if (n > 3 && n < 21) return n + "th"; // special case for teens
+  if (n > 3 && n < 21) return n + "th"; 
   switch (n % 10) {
     case 1: return n + "st";
     case 2: return n + "nd";
@@ -64,7 +64,7 @@ const cities = [nyc, chicago, la, sf, dallas,
   petersburg,
   savannah,
   nl,
-  schenectady]; // Add your City instances here
+  schenectady]; 
 
 const stateAdmission = {
   "01": 1819, // Alabama
@@ -75,7 +75,7 @@ const stateAdmission = {
   "08": 1876, // Colorado
   "09": 1788, // Connecticut
   "10": 1787, // Delaware
-  "11": 1790, // DC (treated as 1790 here)
+  "11": 1790, // DC
   "12": 1845, // Florida
   "13": 1788, // Georgia
   "15": 1959, // Hawaii
@@ -180,7 +180,6 @@ function wrapTextByChars(text, maxChars = 40) {
   let currentLine = "";
 
   for (let word of words) {
-    // If adding this word goes past limit, wrap (but don't cut the word)
     if ((currentLine + word).length > maxChars) {
       lines.push(currentLine.trim());
       currentLine = word + " ";
@@ -189,7 +188,6 @@ function wrapTextByChars(text, maxChars = 40) {
     }
   }
 
-  // Push the last line if not empty
   if (currentLine.trim().length > 0) {
     lines.push(currentLine.trim());
   }
@@ -198,7 +196,6 @@ function wrapTextByChars(text, maxChars = 40) {
 }
 
 let currentZoomScale = 1;
-//const mapGroup = svg.append("g").attr("id", "mapGroup");
 
 const projection = d3.geoAlbersUsa()
     .translate([480, 300])
@@ -236,7 +233,7 @@ class CityDot {
   draw() {
     const [x, y] = this.projection(this.city.coords);
 
-    const maxPop = getMaxPopulation(this.year); // ✅ Get largest city population this year
+    const maxPop = getMaxPopulation(this.year); 
     const pop = this.city.population[this.year];
 
     const rank = getCityRank(this.city, this.year);
@@ -252,9 +249,8 @@ class CityDot {
       .attr("class", "city-dot")
       .attr("cx", x)
       .attr("cy", y)
-      .attr("r", scaledRadius) // scaled on zoom
+      .attr("r", scaledRadius) 
       .attr("data-base-radius", radius)
-      //.attr("fill", color)
       .style("fill", color)
       .attr("stroke", "#444")
       .attr("stroke-width", 1.5)
@@ -283,7 +279,7 @@ class CityDot {
       .style("left", (event.pageX + 10) + "px")
       .style("top", (event.pageY - 20) + "px")
       .style("display", "block")
-      .style("max-width", "300px") // <-- added max width
+      .style("max-width", "300px") 
       .html(`
         <span class="city-name">${this.city.name}</span><br>
         <span class="label">Population:</span> ${this.city.population[year].toLocaleString()}<br>
@@ -292,12 +288,12 @@ class CityDot {
         <span class="label">At Its Relative Peak:</span> ${(this.city.info)}
       `);
  
-    event.stopPropagation(); // Don't let body click immediately close it
+    event.stopPropagation(); 
   }
 }
 
 const zoom = d3.zoom()
-  .scaleExtent([0.5, 8]) // Zoom out to 50%, in to 800%
+  .scaleExtent([0.5, 8]) 
   .on("zoom", (event) => {
     const { transform } = event;
     currentZoomScale = transform.k;
@@ -309,7 +305,6 @@ const zoom = d3.zoom()
     });
   });
 
-// Apply zoom to the SVG
 svg.call(zoom);
 
 d3.select("#resetZoom").on("click", () => {
@@ -317,8 +312,8 @@ d3.select("#resetZoom").on("click", () => {
 });
 
 const rankColorScale = d3.scaleSequential()
-  .domain([20, 1]) // Rank 1 is best, Rank 20 is lowest
-  .interpolator(d3.interpolateHcl("#F0E68C", "#DAA520"))
+  .domain([20, 1]) 
+  .interpolator(d3.interpolateHcl("#03ad98", "#DAA520"))
 
 function getCityRank(city, year) {  
   const citiesWithData = cities
@@ -332,7 +327,7 @@ function getCityRank(city, year) {
 function getMaxPopulation(year) {
   const citiesWithData = cities.filter(c => c.population[year] !== undefined);
   const max = d3.max(citiesWithData, c => c.population[year]);
-  return max || 1; // avoid division by zero
+  return max || 1; 
 }
 let year = 1790;
 
@@ -340,7 +335,7 @@ function getTop20MetroShare(year) {
   const citiesWithData = cities
     .filter(c => c.population[year] !== undefined)
     .sort((a, b) => b.population[year] - a.population[year])
-    .slice(0, 20); // Top 20
+    .slice(0, 20); 
 
   const totalTop20 = citiesWithData.reduce((sum, c) => sum + c.population[year], 0);
   const totalUS = usPopulationByDecade[year];
@@ -348,12 +343,15 @@ function getTop20MetroShare(year) {
   if (!totalTop20 || !totalUS) return "N/A";
 
   const percent = (totalTop20 / totalUS) * 100;
-  return percent.toFixed(2); // Return with two decimal places
+  return percent.toFixed(2); 
 }
 
 d3.select("#yearSlider").on("input", function(){
   year = +this.value;
   d3.select("#yearDisplay").text(year);
+
+const playButton = document.getElementById("play-button");
+let playInterval = null; 
 
   baseMapLayer.selectAll("path")
     .attr("fill", d => {
@@ -366,6 +364,26 @@ d3.select("#yearSlider").on("input", function(){
   renderCitiesForYear(year);
 });
 
+function updateTopCitiesCard(year){
+  
+  const top5 = cities
+    .filter(c => c.population[year] != null)
+    .sort((a,b) => b.population[year] - a.population[year])
+    .slice(0, 5);
+
+  const titleYear = document.getElementById('top-cities-year');
+  if (titleYear) titleYear.textContent = year;
+
+  const ul = document.getElementById('city-list');
+  if (!ul) return;
+  ul.innerHTML = '';
+  top5.forEach(c => {
+    const li = document.createElement('li');
+    li.textContent = `${c.name}: ${c.population[year].toLocaleString()}`;
+    ul.appendChild(li);
+  });
+}
+
 function renderCitiesForYear(year) {
   cities.forEach(city => {
     new CityDot(d3.select("#svg2"), projection, city, year);
@@ -376,8 +394,7 @@ function renderCitiesForYear(year) {
   document.getElementById("urbanPercentValue").textContent =
   urbanPercent[year] !== undefined ? urbanPercent[year].toFixed(1) + "%" : "N/A";
 
-  //const pct = getTop20MetroShare(year);
-  //d3.select("#metroShareValue").text(pct + "%");
+  updateTopCitiesCard(year);
 }
 
 function assignPeakDecades(cities) {
@@ -398,7 +415,7 @@ function assignPeakDecades(cities) {
       }
     }
 
-    city.peakDecade = Math.max(...bestDecades); // prefer latest if tied
+    city.peakDecade = Math.max(...bestDecades); 
   });
 }
 
@@ -429,14 +446,45 @@ function addLegendItem(color, text) {
   legendBox.appendChild(item);
 }
 
-// Static legend entries
 addLegendItem("#8c8d91", "State");
 addLegendItem("#dcdcdc", "Not a state \n");
 
-// Gradient explanation
 addLegendItem("#DAA520", "Largest city in specified year");
-addLegendItem("#F0E68C", "#20th largest city in specified year");
+addLegendItem("#03ad98", "#20th largest city in specified year");
 
 assignPeakDecades(cities);
 
 renderCitiesForYear(year)
+
+const playButton = document.getElementById("play-button");
+let playInterval = null;
+
+playButton.addEventListener("click", () => {
+  if (playInterval) {
+    clearInterval(playInterval);
+    playInterval = null;
+    playButton.textContent = "▶ Play";
+  } else {
+    playButton.textContent = "⏸ Pause";
+    playInterval = setInterval(() => {
+      if (year < 2020) {
+        year += 10;
+        d3.select("#yearSlider").property("value", year);
+        d3.select("#yearDisplay").text(year);
+
+        baseMapLayer.selectAll("path")
+          .attr("fill", d => {
+            const admission = stateAdmission[d.id];
+            return (admission && admission <= year) ? "#8c8d91" : "#D3D3D3";
+          });
+
+        d3.select("#svg2").selectAll("circle").remove();
+        renderCitiesForYear(year);
+      } else {
+        clearInterval(playInterval);
+        playInterval = null;
+        playButton.textContent = "▶ Play";
+      }
+    }, 1500); 
+  }
+});
